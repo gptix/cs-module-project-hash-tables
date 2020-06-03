@@ -15,6 +15,9 @@ class HashTableEntry:
         self.key = key
         self.value = value
         self.next = None
+        
+    def __repr__(self):
+        return f'<HashTableEntry -- Key: {self.key} -- Value: {self.value}>'
 
 
 # Hash table can't have fewer than this many slots
@@ -150,7 +153,10 @@ https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
         # if there is no linked list at the index, there cannot
         # be a match for the key
         if self.slots[slot] is None:
-            return f"No entry matching key; {key_sought}"
+            return f"No linked list at calculated index for key: {key_sought}"
+        
+        if self.slots[slot].head is None:
+            return f"Linked list at calculated index for key exists, but head is None."
         
         # the list has at least one node.
         linked_list = self.slots[slot]
@@ -174,7 +180,7 @@ https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
                 prev = prev.next
                 cur = cur.next
                     
-        return f"No entry matching key; {key_sought}"
+        return f"No entry matching key: {key_sought}"
     
     def djb2(self, key):
         """
@@ -195,96 +201,5 @@ https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
                 cur = linked_list.head
                 while cur is not None:
                     larger_table.put(cur.key, cur.value)
-                    cur = cur.next
-                
-        self = larger_table
-        return f'Resized to capacity: {self.capacity}'
-
-
-
-if __name__ == "__main__":
-    ht = HashTable(8)
-
-    ht.put("line_1", "'Twas brillig, and the slithy toves")
-    ht.put("line_2", "Did gyre and gimble in the wabe:")
-    ht.put("line_3", "All mimsy were the borogoves,")
-    ht.put("line_4", "And the mome raths outgrabe.")
-    ht.put("line_5", '"Beware the Jabberwock, my son!')
-    ht.put("line_6", "The jaws that bite, the claws that catch!")
-    ht.put("line_7", "Beware the Jubjub bird, and shun")
-    ht.put("line_8", 'The frumious Bandersnatch!"')
-    ht.put("line_9", "He took his vorpal sword in hand;")
-    ht.put("line_10", "Long time the manxome foe he sought--")
-    ht.put("line_11", "So rested he by the Tumtum tree")
-    ht.put("line_12", "And stood awhile in thought.")
-
-    print("")
-
-    # Test storing beyond capacity
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
-
-    # Test resizing
-    old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
-    new_capacity = ht.get_num_slots()
-
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
-
-    # Test if data intact after resizing
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
-
-    print("")
-
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.next = None
-            
-class LinkedList:
-    def __init__(self):
-        self.head = None
-        
-    def insert_at_head(self, node): # consing
-        node.next = self.head
-        self.head = node
-        
-        
-    def find(self, value):
-        cur = self.head
-        
-        # traverse
-        while cur is not None:
-            if cur.value == value:
-            return cur
-        cur = cur.next
-    
-        # if we got here, nothing found
-        return None
-        
-        def delete(self, value):
-            cur = self.head
-            
-            if cur.value == value:
-                self.head = self.head.next
-                return cur
-            
-            prev = cur
-            cur = cur.next
-            
-            while cur is not None:
-                if cur.value == value:
-                    prev.next = cur.next #removes pointer to deleted node
-                    return cur
-                
-                else: 
-                    prev = prev.next
-                    cur = cur.next
-                    
-            return None  # didn't find it
-            
-                
-    
-        
-    
+                    cur = cur.next        
+        return larger_table
